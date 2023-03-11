@@ -3,7 +3,8 @@ const router=express.Router();
 
 const userController=require('../controllers/users')
 
-console.log("useroutes")
 router.post('/signup',userController.signup)
+
+router.post('/login',userController.login)
 
 module.exports=router

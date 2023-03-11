@@ -23,7 +23,7 @@
             <button class="btn" type="submit">sign up</button>
 
             <div>
-                <!-- <a href="\login.html">login here</a> -->
+                <a href="login.html">login here</a>
             </div>
         </form>
     </div>
@@ -52,7 +52,7 @@
                 alert('User already exists')
             }
             else if(response.data.message=='successfully created new user'){
-                // window.location.href='./login.html'
+                window.location.href='./login.html'
                 alert('successfully signed up')
                 console.log("successfull")
             }else{

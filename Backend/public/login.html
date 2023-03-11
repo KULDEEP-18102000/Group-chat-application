@@ -43,6 +43,7 @@ async function onSubmit(e) {
         // console.log(response)
         alert(response.data.message)
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('username',response.data.name)
         window.location.href = 'chat.html'
         
     } catch (error) {

@@ -1,3 +1,4 @@
+const { BOOLEAN } = require('sequelize')
 const Sequelize=require('sequelize')
 const sequelize=require('../util/database')
 
@@ -25,6 +26,9 @@ const User=sequelize.define('users',{
     password:{
         type:Sequelize.STRING,
         allowNull:false
+    },
+    isloggedin:{
+        type:BOOLEAN
     }
 })
 

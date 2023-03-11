@@ -8,6 +8,13 @@ const cors=require('cors')
 const sequelize=require('./util/database')
 
 const userRoutes=require('./routes/users')
+const chatRoutes=require('./routes/chats')
+
+const User=require('./models/users')
+const Chat=require('./models/chats')
+
+User.hasMany(Chat)
+Chat.belongsTo(User)
 
 
 app.use(cors({
@@ -18,6 +25,7 @@ app.use(BodyParser.json({extended:false}))
 console.log("app.js")
 
 app.use('/user',userRoutes)
+app.use('/chat',chatRoutes)
 
 sequelize.sync({})
 .then(()=>{

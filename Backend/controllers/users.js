@@ -11,7 +11,7 @@ exports.signup = async (req, res) => {
         } else {
             bcrypt.hash(req.body.password, 10, async (err, hash) => {
                 console.log(err)
-                await User.create({ name: req.body.name, email: req.body.email, phoneNumber: req.body.phoneNumber, password: hash })
+                await User.create({ name: req.body.name, email: req.body.email, phoneNumber: req.body.phoneNumber, password: hash,isloggedin:false })
                 res.status(201).json({ message: "successfully created new user" })
             })
         }
@@ -33,18 +33,29 @@ exports.login = async (req, res) => {
             res.status(404).json({ message: "user not found" })
         }
         else {
-            bcrypt.compare(password, user.password, (err, result) => {
+            bcrypt.compare(password, user.password, async(err, result) => {
                 if (err) {
                     res.status(500).json({ success: false, message: "Something went wrong" })
                 }
                 if (result == true) {
-                    res.status(200).json({ success: true, message: "user login successfull", token: generateAccessToken(user.id) })
+                    await User.update({isloggedin:true},{where:{id:user.id}})
+                    res.status(200).json({ success: true, message: "user login successfull", token: generateAccessToken(user.id),name:user.name })
                 }
                 else {
                     res.status(400).json({ success: false, message: "incorrect password" })
                 }
             })
         }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.getAllLoggedinUsers=async(req,res)=>{
+    try {
+        console.log(req.user)
+        const loggedinusers=await User.findAll({where:{isloggedin:true}})
+        res.status(200).json({loggedinusers})
     } catch (error) {
         console.log(error)
     }

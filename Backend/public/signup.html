@@ -49,10 +49,14 @@
             // console.log(response)
             if(response.data.message=="user already exists"){
                 document.body.innerHTML=document.body.innerHTML+'<h3>User already exists</h3>'
+                alert('User already exists')
             }
-            else{
+            else if(response.data.message=='successfully created new user'){
                 // window.location.href='./login.html'
+                alert('successfully signed up')
                 console.log("successfull")
+            }else{
+
             }
             console.log(response)
             username.value=""

@@ -42,6 +42,17 @@
             li.setAttribute('id',user.id)
             ul.appendChild(li)
         }
+
+        const messageSection=document.getElementById('messages')
+        const allChats=await axios.get('http://localhost:3000/chat/getallchats')
+        console.log(allChats.data.chats)
+        for (let index = 0; index < allChats.data.chats.length; index++) {
+            const chat = allChats.data.chats[index];
+            const li=document.createElement('li')
+            li.appendChild(document.createTextNode(`${chat.message}`))
+            li.setAttribute('id',chat.id)
+            messageSection.appendChild(li)
+        }
     })
 
     // console.log(document.getElementById('msg-btn'))
@@ -53,6 +64,7 @@
         }
         const response=await axios.post('http://localhost:3000/chat/createmessage',my_obj,{headers:{"Authorization":token}})
         // console.log(response)
+        location.reload();
     }
 </script>
 

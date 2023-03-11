@@ -14,3 +14,13 @@ exports.createMessage = async (req, res) => {
         console.log(error)
     }
 }
+
+
+exports.GetAllChats=async(req,res)=>{
+    try {
+        const chats=await Chat.findAll({})
+        res.status(200).json({chats})
+    } catch (error) {
+        console.log(error)
+    }
+}

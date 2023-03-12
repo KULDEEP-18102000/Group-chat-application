@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>chat app</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h2>Chat App</h2>
     <div id="container">
@@ -18,55 +20,82 @@
         </div>
     </div>
 </body>
-<script>
-    const ul=document.getElementById('users')
-    // console.log(document.getElementById('message'))
-    const message=document.getElementById('message')
 
-    window.addEventListener('DOMContentLoaded',async(req,res)=>{
-        const li=document.createElement('li')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+
+
+<script>
+    const ul = document.getElementById('users')
+    // console.log(document.getElementById('message'))
+    const message = document.getElementById('message')
+
+    let last_message_id;
+    axios.get(`http://localhost:3000/chat/getallchats?last_message_id=${last_message_id}`)
+    .then((allChats)=>{
+        localStorage.setItem('chats',JSON.stringify(allChats.data.chats) )
+    console.log(allChats.data.chats)
+    })
+
+
+    window.addEventListener('DOMContentLoaded',  async(req, res) => {
+        const li = document.createElement('li')
         li.appendChild(document.createTextNode(`you joined`))
-            // li.setAttribute('id',user.id)
+        // li.setAttribute('id',user.id)
         ul.appendChild(li)
-        const token=localStorage.getItem('token')
-        const allLoggedInUsers=await axios.get('http://localhost:3000/user/getallloggedinusers',{ headers: { "Authorization": token } })
+        const token = localStorage.getItem('token')
+        const allLoggedInUsers = await axios.get('http://localhost:3000/user/getallloggedinusers', { headers: { "Authorization": token } })
         // console.log(allLoggedInUsers.data.loggedinusers)
         for (let index = 0; index < allLoggedInUsers.data.loggedinusers.length; index++) {
             const user = allLoggedInUsers.data.loggedinusers[index];
             // console.log(user)
-            if(user.name===localStorage.getItem('username')){
+            if (user.name === localStorage.getItem('username')) {
                 continue;
             }
-            const li=document.createElement('li')
+            const li = document.createElement('li')
             li.appendChild(document.createTextNode(`${user.name} joined`))
-            li.setAttribute('id',user.id)
+            li.setAttribute('id', user.id)
             ul.appendChild(li)
         }
 
-        const messageSection=document.getElementById('messages')
-        const allChats=await axios.get('http://localhost:3000/chat/getallchats')
-        console.log(allChats.data.chats)
-        for (let index = 0; index < allChats.data.chats.length; index++) {
-            const chat = allChats.data.chats[index];
-            const li=document.createElement('li')
+        const messageSection = document.getElementById('messages')
+        const messages = JSON.parse(localStorage.getItem('chats'))
+
+
+        for (let index = 0; index < messages.length; index++) {
+            const chat = messages[index];
+            const li = document.createElement('li')
             li.appendChild(document.createTextNode(`${chat.message}`))
-            li.setAttribute('id',chat.id)
+            li.setAttribute('id', chat.id)
+            last_message_id = chat.id
             messageSection.appendChild(li)
         }
+
+        const new_messages = await axios.get(`http://localhost:3000/chat/getallchats?last_message_id=${last_message_id}`)
+        for (let index = 0; index < new_messages.length; index++) {
+            const chat = new_messages[index];
+            const li = document.createElement('li')
+            li.appendChild(document.createTextNode(`${chat.message}`))
+            li.setAttribute('id', chat.id)
+            last_message_id = chat.id
+            messageSection.appendChild(li)
+        }
+
+        const merged_messages = messages + new_messages
+        localStorage.setItem('chats', merged_messages)
+
     })
 
     // console.log(document.getElementById('msg-btn'))
-    document.getElementById('msg-btn').onclick=async(req,res)=>{
-        const token=localStorage.getItem('token')
+    document.getElementById('msg-btn').onclick = async (req, res) => {
+        const token = localStorage.getItem('token')
         console.log("clicked")
-        const my_obj={
-            message:message.value
+        const my_obj = {
+            message: message.value
         }
-        const response=await axios.post('http://localhost:3000/chat/createmessage',my_obj,{headers:{"Authorization":token}})
+        const response = await axios.post('http://localhost:3000/chat/createmessage', my_obj, { headers: { "Authorization": token } })
         // console.log(response)
-        location.reload();
+        // location.reload();
     }
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
 </html>

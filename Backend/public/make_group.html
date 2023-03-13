@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make your group</title>
+</head>
+
+<body>
+
+    <div id="container">
+        <button id="groups">View Your Groups</button>
+        <form id="my-form">
+            <label for="group-name"><b>Your group name</b></label><br>
+            <input type="text" id="group-name" name="group-name"><br>
+            <div id="user-list">
+            </div>
+            <button class="btn" type="submit">Make group</button><br>
+        </form>
+    </div>
+
+
+    <script>
+        const userList = document.getElementById('user-list')
+
+
+        window.addEventListener('DOMContentLoaded', async (req, res) => {
+            var users = await axios.get('http://localhost:3000/user/getallusers')
+            console.log(users.data.users)
+
+            for (let index = 0; index < users.data.users.length; index++) {
+                const user = users.data.users[index];
+                const input_user = document.createElement('input')
+                input_user.setAttribute('type', 'checkbox')
+                input_user.setAttribute('id', user.id)
+                input_user.setAttribute('name', user.name)
+                input_user.setAttribute('value', user.name)
+                const label_user = document.createElement('label')
+                label_user.setAttribute('for', user.id)
+                label_user.appendChild(document.createTextNode(`${user.name}`))
+                userList.appendChild(input_user)
+                userList.appendChild(label_user)
+                userList.innerHTML = userList.innerHTML + '<br>'
+            }
+        })
+
+
+        document.getElementById('my-form').addEventListener('submit',onSubmit)
+
+        async function onSubmit(e) {
+            e.preventDefault()
+            var users = await axios.get('http://localhost:3000/user/getallusers')
+            console.log("submit")
+            const group_name = document.getElementById('group-name')
+
+            const my_obj = {
+                group_name: group_name.value,
+                users: []
+            }
+
+            for (let index = 0; index < users.data.users.length; index++) {
+                const user = users.data.users[index];
+                const userElement = document.getElementById(`${user.id}`)
+                if (userElement.checked === true) {
+                    my_obj.users.push(userElement.id)
+                }
+            }
+            const token = localStorage.getItem('token')
+            const response=await axios.post('http://localhost:3000/group/creategroup',my_obj,{ headers: { "Authorization": token } })
+            console.log(my_obj)
+            location.reload()
+        }
+
+        document.getElementById('groups').onclick=async(req,res)=>{
+            window.location.href='view_group.html'
+        }
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+
+
+</body>
+
+</html>

@@ -29,6 +29,8 @@
         const useremail = document.getElementById('email')
 const userpassword = document.getElementById('password')
 
+localStorage.clear()
+
 document.getElementById('my-form').addEventListener('submit', onSubmit);
 
 
@@ -44,7 +46,7 @@ async function onSubmit(e) {
         alert(response.data.message)
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('username',response.data.name)
-        window.location.href = 'chat.html'
+        window.location.href = 'view_group.html'
         
     } catch (error) {
         document.body.innerHTML = document.body.innerHTML + `<h3>${error.message}</h3>`

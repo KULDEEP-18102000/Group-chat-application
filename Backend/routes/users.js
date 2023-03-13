@@ -11,4 +11,6 @@ router.post('/login',userController.login)
 
 router.get('/getallloggedinusers',authenticateUser.authenticate,userController.getAllLoggedinUsers)
 
+router.get('/getallusers',userController.getAllUsers)
+
 module.exports=router

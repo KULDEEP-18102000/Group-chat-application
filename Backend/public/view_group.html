@@ -6,10 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View all Groups</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <button id="make-group">Make Group</button>
+    <button id="group-settings">Group Settings</button>
     <div id="container">
         <div id="users"></div>
         <h2>View All Groups</h2>
@@ -151,6 +154,10 @@
 
         document.getElementById('make-group').onclick = async (req, res) => {
             window.location.href = 'make_group.html'
+        }
+
+        document.getElementById('group-settings').onclick = async (req, res) => {
+            window.location.href = 'edit_group.html'
         }
 
     </script>

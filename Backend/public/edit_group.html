@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group settings</title>
 
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -31,6 +32,7 @@
                 const groupbtn = document.createElement('button')
                 groupbtn.appendChild(document.createTextNode(`${groupName}`))
                 groupbtn.setAttribute('id', groupId + groupName)
+                groupbtn.setAttribute('class','btn')
                 GroupsElement.appendChild(groupbtn)
                 const breakElement = document.createElement('br')
                 GroupsElement.appendChild(breakElement)
@@ -59,6 +61,7 @@
                         const add_btn = document.createElement('button')
                         add_btn.appendChild(document.createTextNode('Add them in group'))
                         add_btn.setAttribute('id', 'add-group')
+                        add_btn.setAttribute('class','btn')
                         GroupsElement.appendChild(add_btn)
 
 
@@ -106,6 +109,7 @@
                         const remove_btn = document.createElement('button')
                         remove_btn.appendChild(document.createTextNode('Remove them from group'))
                         remove_btn.setAttribute('id', 'remove-group')
+                        remove_btn.setAttribute('class','btn')
                         userElement.appendChild(remove_btn)
 
 
@@ -132,6 +136,7 @@
                         const admin_btn = document.createElement('button')
                         admin_btn.appendChild(document.createTextNode('Make them admin of group'))
                         admin_btn.setAttribute('id', 'admin-group')
+                        admin_btn.setAttribute('class','btn')
                         userElement.appendChild(admin_btn)
 
                         document.getElementById('admin-group').onclick = async (req, res) => {
@@ -150,7 +155,7 @@
                             const token = localStorage.getItem('token')
                             const response = await axios.post('http://localhost:3000/group/admingroup', my_obj)
                             // console.log(my_obj)
-                            // location.reload()
+                            location.reload()
                         }
                     }
                 }

@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const path=require('path')
 
+
+
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -32,6 +34,21 @@ app.use(cors({
     // origin: 'http://127.0.0.1:3000'
     // origin: `${process.env.HOST}`
 }))
+
+const io=require('socket.io')(5000,{
+    cors:{
+        // origin:['http://127.0.0.1:3000']
+        origin:['http://3.109.32.194:3000']
+    }
+})
+
+io.on("connection",socket=>{
+    console.log(socket.id)
+    socket.on("send-message",message=>{
+        socket.broadcast.emit("receive-message",message)
+    })
+})
+
 
 app.use(BodyParser.json({ extended: false }))
 console.log("app.js")

@@ -24,6 +24,15 @@
     <!-- <button>Logout</button> -->
 
 
+    <!-- <script defer src="http://3.109.32.194:3000/socket.io/socket.io.js"></script> -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+    <!-- <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script> -->
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <!-- <script  src="view_group.js"></script> -->
     <script>
         const users = document.getElementById('users')
         const groups = document.getElementById('groups')
@@ -31,6 +40,28 @@
         const messageSection = document.getElementById('messageSection')
         var last_message_id
 
+        // const io = require('socket.io-client')
+
+        const socket = io('http://3.109.32.194:5000')
+
+        socket.on("connect", () => {
+            console.log(`connected with id:${socket.id}`)
+        })
+
+        socket.on("receive-message", message => {
+            console.log(message)
+
+            const localChats = JSON.parse(localStorage.getItem('chats'))
+            console.log(localChats)
+            localChats.push(message.data.chat)
+            console.log(localChats)
+            localStorage.setItem('chats', JSON.stringify(localChats))
+            const li = document.createElement('li')
+            li.appendChild(document.createTextNode(`${message.data.chat.message}`))
+            li.setAttribute('id', message.id)
+            last_message_id = message.id
+            messageSection.appendChild(li)
+        })
 
         window.addEventListener('DOMContentLoaded', async (req, res) => {
             // const allChats=JSON.parse(localStorage.getItem('chats'))
@@ -79,7 +110,7 @@
                 groupbtn.appendChild(document.createTextNode(`${groupName}`))
                 groupbtn.setAttribute('id', groupId + groupName)
                 groups.appendChild(groupbtn)
-                const breakElement=document.createElement('br')
+                const breakElement = document.createElement('br')
                 groups.appendChild(breakElement)
                 // groups.innerHTML=groups.innerHTML+'<br>'
 
@@ -135,6 +166,9 @@
                         const message = await axios.post(`http://3.109.32.194:3000/chat/createmessage/${groupId}`, my_obj, { headers: { "Authorization": token } })
                         console.log(message.data.chat)
                         const localChats = JSON.parse(localStorage.getItem('chats'))
+
+                        socket.emit("send-message", message)
+
                         console.log(localChats)
                         localChats.push(message.data.chat)
                         console.log(localChats)
@@ -161,8 +195,6 @@
         }
 
     </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
 </body>
 
 </html>

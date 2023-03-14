@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group settings</title>
+
+</head>
+
+<body>
+    <div id="container">
+        <div id="groups"></div>
+        <div id="users"></div>
+    </div>
+
+    <script>
+        const GroupsElement = document.getElementById('groups')
+        const userElement = document.getElementById('users')
+
+        window.addEventListener('DOMContentLoaded', async (req, res) => {
+            const token = localStorage.getItem('token')
+            const Groups = await axios.get('http://localhost:3000/group/getAllAdmingroups', { headers: { "Authorization": token } })
+            console.log(Groups)
+
+            for (let i = 0; i < Groups.data.groupNames.length; i++) {
+                const groupName = Groups.data.groupNames[i];
+                const groupId = Groups.data.groupIds[i].groupId
+                // console.log(groupId)
+                const groupbtn = document.createElement('button')
+                groupbtn.appendChild(document.createTextNode(`${groupName}`))
+                groupbtn.setAttribute('id', groupId + groupName)
+                GroupsElement.appendChild(groupbtn)
+                const breakElement = document.createElement('br')
+                GroupsElement.appendChild(breakElement)
+
+
+                document.getElementById(groupId + groupName).onclick = async (req, res) => {
+                    console.log(groupId)
+                    const users = await axios.get(`http://localhost:3000/user/getrestusers/${groupId}`)
+                    console.log(users.data.Rest_users)
+
+                    for (let index = 0; index < users.data.Rest_users.length; index++) {
+                        const user = users.data.Rest_users[index];
+                        const input_user = document.createElement('input')
+                        input_user.setAttribute('type', 'checkbox')
+                        input_user.setAttribute('id', user[0])
+                        input_user.setAttribute('name', user[1])
+                        input_user.setAttribute('value', user[1])
+                        const label_user = document.createElement('label')
+                        label_user.setAttribute('for', user[0])
+                        label_user.appendChild(document.createTextNode(`${user[1]}`))
+                        GroupsElement.appendChild(input_user)
+                        GroupsElement.appendChild(label_user)
+                        GroupsElement.innerHTML = GroupsElement.innerHTML + '<br>'
+                    }
+                    if (users.data.Rest_users.length > 0) {
+                        const add_btn = document.createElement('button')
+                        add_btn.appendChild(document.createTextNode('Add them in group'))
+                        add_btn.setAttribute('id', 'add-group')
+                        GroupsElement.appendChild(add_btn)
+
+
+                        document.getElementById('add-group').onclick = async (req, res) => {
+                            const my_obj = {
+                                group_Id: groupId,
+                                users: []
+                            }
+                            for (let index = 0; index < users.data.Rest_users.length; index++) {
+                                const user = users.data.Rest_users[index];
+                                const userElement = document.getElementById(`${user[0]}`)
+                                if (userElement.checked === true) {
+                                    my_obj.users.push(userElement.id)
+                                }
+                            }
+                            console.log(my_obj)
+                            const token = localStorage.getItem('token')
+                            const response = await axios.post('http://localhost:3000/group/addgroup', my_obj)
+                            console.log(my_obj)
+                            location.reload()
+                        }
+                    }
+
+
+                    const PresentUsers = await axios.get(`http://localhost:3000/user/getpresentusers/${groupId}`, { headers: { "Authorization": token } })
+                    console.log(PresentUsers.data.PresentUsers)
+
+                    for (let index = 0; index < PresentUsers.data.PresentUsers.length; index++) {
+                        const user = PresentUsers.data.PresentUsers[index];
+                        console.log(user)
+                        const input_user = document.createElement('input')
+                        input_user.setAttribute('type', 'checkbox')
+                        input_user.setAttribute('id', user[0])
+                        input_user.setAttribute('name', user[1])
+                        input_user.setAttribute('value', user[1])
+                        const label_user = document.createElement('label')
+                        label_user.setAttribute('for', user[0])
+                        label_user.appendChild(document.createTextNode(`${user[1]}`))
+                        userElement.appendChild(input_user)
+                        userElement.appendChild(label_user)
+                        userElement.innerHTML = userElement.innerHTML + '<br>'
+                    }
+
+                    if (PresentUsers.data.PresentUsers.length > 0) {
+                        const remove_btn = document.createElement('button')
+                        remove_btn.appendChild(document.createTextNode('Remove them from group'))
+                        remove_btn.setAttribute('id', 'remove-group')
+                        userElement.appendChild(remove_btn)
+
+
+                        document.getElementById('remove-group').onclick = async (req, res) => {
+                            const my_obj = {
+                                group_Id: groupId,
+                                users: []
+                            }
+                            for (let index = 0; index < PresentUsers.data.PresentUsers.length; index++) {
+                                const user = PresentUsers.data.PresentUsers[index];
+                                const userElement = document.getElementById(`${user[0]}`)
+                                if (userElement.checked === true) {
+                                    my_obj.users.push(userElement.id)
+                                }
+                            }
+                            console.log(my_obj)
+                            const token = localStorage.getItem('token')
+                            const response = await axios.post('http://localhost:3000/group/removegroup', my_obj)
+                            // console.log(my_obj)
+                            // location.reload()
+                        }
+
+
+                        const admin_btn = document.createElement('button')
+                        admin_btn.appendChild(document.createTextNode('Make them admin of group'))
+                        admin_btn.setAttribute('id', 'admin-group')
+                        userElement.appendChild(admin_btn)
+
+                        document.getElementById('admin-group').onclick = async (req, res) => {
+                            const my_obj = {
+                                group_Id: groupId,
+                                users: []
+                            }
+                            for (let index = 0; index < PresentUsers.data.PresentUsers.length; index++) {
+                                const user = PresentUsers.data.PresentUsers[index];
+                                const userElement = document.getElementById(`${user[0]}`)
+                                if (userElement.checked === true) {
+                                    my_obj.users.push(userElement.id)
+                                }
+                            }
+                            console.log(my_obj)
+                            const token = localStorage.getItem('token')
+                            const response = await axios.post('http://localhost:3000/group/admingroup', my_obj)
+                            // console.log(my_obj)
+                            // location.reload()
+                        }
+                    }
+                }
+            }
+        })
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+</body>
+
+</html>

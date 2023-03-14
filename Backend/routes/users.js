@@ -13,4 +13,8 @@ router.get('/getallloggedinusers',authenticateUser.authenticate,userController.g
 
 router.get('/getallusers',userController.getAllUsers)
 
+router.get('/getrestusers/:groupId',userController.getRestUsers)
+
+router.get('/getpresentusers/:groupId',authenticateUser.authenticate,userController.getPresentUsers)
+
 module.exports=router

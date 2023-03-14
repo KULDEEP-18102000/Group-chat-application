@@ -22,7 +22,7 @@
 
         window.addEventListener('DOMContentLoaded', async (req, res) => {
             const token = localStorage.getItem('token')
-            const Groups = await axios.get('http://localhost:3000/group/getAllAdmingroups', { headers: { "Authorization": token } })
+            const Groups = await axios.get('http://3.109.32.194:3000/group/getAllAdmingroups', { headers: { "Authorization": token } })
             console.log(Groups)
 
             for (let i = 0; i < Groups.data.groupNames.length; i++) {
@@ -40,7 +40,7 @@
 
                 document.getElementById(groupId + groupName).onclick = async (req, res) => {
                     console.log(groupId)
-                    const users = await axios.get(`http://localhost:3000/user/getrestusers/${groupId}`)
+                    const users = await axios.get(`http://3.109.32.194:3000/user/getrestusers/${groupId}`)
                     console.log(users.data.Rest_users)
 
                     for (let index = 0; index < users.data.Rest_users.length; index++) {
@@ -79,14 +79,14 @@
                             }
                             console.log(my_obj)
                             const token = localStorage.getItem('token')
-                            const response = await axios.post('http://localhost:3000/group/addgroup', my_obj)
+                            const response = await axios.post('http://3.109.32.194:3000/group/addgroup', my_obj)
                             console.log(my_obj)
                             location.reload()
                         }
                     }
 
 
-                    const PresentUsers = await axios.get(`http://localhost:3000/user/getpresentusers/${groupId}`, { headers: { "Authorization": token } })
+                    const PresentUsers = await axios.get(`http://3.109.32.194:3000/user/getpresentusers/${groupId}`, { headers: { "Authorization": token } })
                     console.log(PresentUsers.data.PresentUsers)
 
                     for (let index = 0; index < PresentUsers.data.PresentUsers.length; index++) {
@@ -127,9 +127,9 @@
                             }
                             console.log(my_obj)
                             const token = localStorage.getItem('token')
-                            const response = await axios.post('http://localhost:3000/group/removegroup', my_obj)
+                            const response = await axios.post('http://3.109.32.194:3000/group/removegroup', my_obj)
                             // console.log(my_obj)
-                            // location.reload()
+                            location.reload()
                         }
 
 
@@ -153,7 +153,7 @@
                             }
                             console.log(my_obj)
                             const token = localStorage.getItem('token')
-                            const response = await axios.post('http://localhost:3000/group/admingroup', my_obj)
+                            const response = await axios.post('http://3.109.32.194:3000/group/admingroup', my_obj)
                             // console.log(my_obj)
                             location.reload()
                         }

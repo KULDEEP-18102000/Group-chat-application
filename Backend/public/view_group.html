@@ -36,7 +36,7 @@
             // const allChats=JSON.parse(localStorage.getItem('chats'))
             // console.log(allChats)
             const token = localStorage.getItem('token')
-            const Groups = await axios.get('http://localhost:3000/group/getallgroups', { headers: { "Authorization": token } })
+            const Groups = await axios.get('http://3.109.32.194:3000/group/getallgroups', { headers: { "Authorization": token } })
             console.log(Groups.data.groupIds)
 
 
@@ -57,7 +57,7 @@
             li.appendChild(document.createTextNode(`you joined`))
             // li.setAttribute('id',user.id)
             users.appendChild(li)
-            const allLoggedInUsers = await axios.get('http://localhost:3000/user/getallloggedinusers', { headers: { "Authorization": token } })
+            const allLoggedInUsers = await axios.get('http://3.109.32.194:3000/user/getallloggedinusers', { headers: { "Authorization": token } })
             // console.log(allLoggedInUsers.data.loggedinusers)
             for (let index = 0; index < allLoggedInUsers.data.loggedinusers.length; index++) {
                 const user = allLoggedInUsers.data.loggedinusers[index];
@@ -94,7 +94,7 @@
                         SendMessage.removeChild(SendMessage.childNodes[0])
                     }
 
-                    const allChats = await axios.get(`http://localhost:3000/chat/getallchatsofgroup/${groupId}`)
+                    const allChats = await axios.get(`http://3.109.32.194:3000/chat/getallchatsofgroup/${groupId}`)
                     localStorage.setItem('chats', JSON.stringify(allChats.data.chats))
                     localStorage.setItem('groupId', groupId)
                     console.log(allChats.data.chats)
@@ -132,7 +132,7 @@
                         const my_obj = {
                             message: InputMessage.value
                         }
-                        const message = await axios.post(`http://localhost:3000/chat/createmessage/${groupId}`, my_obj, { headers: { "Authorization": token } })
+                        const message = await axios.post(`http://3.109.32.194:3000/chat/createmessage/${groupId}`, my_obj, { headers: { "Authorization": token } })
                         console.log(message.data.chat)
                         const localChats = JSON.parse(localStorage.getItem('chats'))
                         console.log(localChats)

@@ -6,7 +6,7 @@ exports.createGroup = async (req, res) => {
     try {
         const group = await Group.create({ groupName: req.body.group_name })
         const users = req.body.users
-        console.log(users)
+        // console.log(users)
         users.forEach(async (user) => {
             if (user == req.user.id) {
                 await UserGroup.create({ groupId: group.id, userId: user, isAdmin: true })
@@ -25,17 +25,17 @@ exports.createGroup = async (req, res) => {
 exports.getAllGroups = async (req, res) => {
     try {
         var groupNames = []
-        console.log(req.user.id)
+        // console.log(req.user.id)
         const groupIds = await UserGroup.findAll({ where: { userId: req.user.id } })
         for (let i = 0; i < groupIds.length; i++) {
             const groupId = groupIds[i];
-            console.log(groupId.dataValues.groupId)
+            // console.log(groupId.dataValues.groupId)
             const groupName = await Group.findOne({ where: { id: groupId.dataValues.groupId } })
-            console.log(groupName.dataValues.groupName)
+            // console.log(groupName.dataValues.groupName)
             groupNames.push(groupName.dataValues.groupName)
-            console.log(groupNames)
+            // console.log(groupNames)
         }
-        console.log(groupNames)
+        // console.log(groupNames)
         res.status(200).json({ groupNames, groupIds })
     } catch (error) {
         console.log(error)
@@ -46,16 +46,6 @@ exports.getAllGroups = async (req, res) => {
 exports.GetAllAdminGroups = async (req, res) => {
     try {
         var groupNames = []
-        console.log(req.user.id)
-        // Post.findAll({
-        //     where: {
-        //       [Op.and]: [
-        //         { authorId: 12 },
-        //         { status: 'active' }
-        //       ]
-        //     }
-        //   });
-        // const groupIds = await UserGroup.findAll({ where: { userId: req.user.id } })
         const groupIds = await UserGroup.findAll({
             where: {
                 [Op.and]: [
@@ -66,13 +56,13 @@ exports.GetAllAdminGroups = async (req, res) => {
         })
         for (let i = 0; i < groupIds.length; i++) {
             const groupId = groupIds[i];
-            console.log(groupId.dataValues.groupId)
+            // console.log(groupId.dataValues.groupId)
             const groupName = await Group.findOne({ where: { id: groupId.dataValues.groupId } })
-            console.log(groupName.dataValues.groupName)
+            // console.log(groupName.dataValues.groupName)
             groupNames.push(groupName.dataValues.groupName)
-            console.log(groupNames)
+            // console.log(groupNames)
         }
-        console.log(groupNames)
+        // console.log(groupNames)
         res.status(200).json({ groupNames, groupIds })
     } catch (error) {
         console.log(error)
@@ -86,7 +76,7 @@ exports.addGroup = async (req, res) => {
         const users = req.body.users
         console.log(users)
         users.forEach(async (user) => {
-            console.log(user)
+            // console.log(user)
             await UserGroup.create({ isAdmin: false, groupId: groupId, userId: user })
         })
         res.status(200).json({ message: "succesfully added them in group" })
@@ -102,7 +92,7 @@ exports.removeFromGroup = async (req, res) => {
         const users = req.body.users
         console.log(users)
         users.forEach(async (user) => {
-            console.log(user)
+            // console.log(user)
             const usergroup=await UserGroup.findOne({where:{userId:user,groupId:groupId}})
             // console.log(usergroup)
             await usergroup.destroy()
@@ -120,7 +110,7 @@ exports.MakeAdminOfGroup=async(req,res)=>{
         const users = req.body.users
 
         users.forEach(async (user) => {
-            console.log(user)
+            // console.log(user)
             const usergroup=await UserGroup.findOne({where:{userId:user,groupId:groupId}})
             // console.log(usergroup)
             await usergroup.update({isAdmin:true})

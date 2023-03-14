@@ -29,7 +29,7 @@
 
 
         window.addEventListener('DOMContentLoaded', async (req, res) => {
-            var users = await axios.get('http://localhost:3000/user/getallusers')
+            var users = await axios.get('http://3.109.32.194:3000/user/getallusers')
             console.log(users.data.users)
 
             for (let index = 0; index < users.data.users.length; index++) {
@@ -54,7 +54,7 @@
 
         async function onSubmit(e) {
             e.preventDefault()
-            var users = await axios.get('http://localhost:3000/user/getallusers')
+            var users = await axios.get('http://3.109.32.194:3000/user/getallusers')
             console.log("submit")
             const group_name = document.getElementById('group-name')
 
@@ -71,7 +71,7 @@
                 }
             }
             const token = localStorage.getItem('token')
-            const response=await axios.post('http://localhost:3000/group/creategroup',my_obj,{ headers: { "Authorization": token } })
+            const response=await axios.post('http://3.109.32.194:3000/group/creategroup',my_obj,{ headers: { "Authorization": token } })
             console.log(my_obj)
             location.reload()
         }

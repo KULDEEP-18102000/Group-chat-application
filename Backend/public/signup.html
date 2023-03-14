@@ -45,7 +45,7 @@
                 password:userpassword.value
             }
             console.log(my_obj)
-            const response=await axios.post('http://localhost:3000/user/signup',my_obj)
+            const response=await axios.post('http://3.109.32.194:3000/user/signup',my_obj)
             // console.log(response)
             if(response.data.message=="user already exists"){
                 document.body.innerHTML=document.body.innerHTML+'<h3>User already exists</h3>'

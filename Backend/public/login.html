@@ -41,7 +41,7 @@ async function onSubmit(e) {
         password: userpassword.value
     }
     try {
-        const response = await axios.post('http://localhost:3000/user/login', my_obj)
+        const response = await axios.post('http://3.109.32.194:3000/user/login', my_obj)
         // console.log(response)
         alert(response.data.message)
         localStorage.setItem('token', response.data.token)

@@ -9,7 +9,7 @@ exports.createMessage = async (req, res) => {
             res.status(400).json({ message: "cant send empty message" })
         } else {
             const chat = await Chat.create({ message: message, userId: req.user.id,groupId:groupId })
-            console.log(chat)
+            // console.log(chat)
             res.status(200).json({ message: "successfully created chat",chat })
         }
     } catch (error) {
@@ -43,16 +43,7 @@ exports.getAllChatsOfGroup=async(req,res)=>{
         //     last_message_id=-1
         // }
         const group_id=req.params.groupId
-        console.log(group_id)
-        // where: {
-        //     [Op.and]: [
-        //       { authorId: 12 },
-        //       { status: 'active' }
-        //     ]
-        //   }
-        // id:{
-        //     [Op.gt]:last_message_id
-        // }
+        // console.log(group_id)
         const chats=await Chat.findAll({where:{groupId:group_id}})
         // const chats=await Chat.findAll({
         //     where:{
@@ -64,7 +55,7 @@ exports.getAllChatsOfGroup=async(req,res)=>{
         //         ]
         //     }
         // })
-        console.log(chats)
+        // console.log(chats)
         res.status(200).json({chats})
     } catch (error) {
         console.log(error)

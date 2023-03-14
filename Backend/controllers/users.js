@@ -23,7 +23,7 @@ exports.signup = async (req, res) => {
 }
 
 function generateAccessToken(id){
-    return jwt.sign({userId: id}, "bobyiskuldeep")
+    return jwt.sign({userId: id}, process.env.TOKEN_SIGNATURE)
 }
 
 exports.login = async (req, res) => {
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
 
 exports.getAllLoggedinUsers=async(req,res)=>{
     try {
-        console.log(req.user)
+        // console.log(req.user)
         const loggedinusers=await User.findAll({where:{isloggedin:true}})
         res.status(200).json({loggedinusers})
     } catch (error) {
@@ -97,15 +97,6 @@ exports.getRestUsers=async(req,res)=>{
         }
         console.log(Rest_users)
         res.status(200).json({Rest_users})
-        // const users=await User.findAll({
-        //     attributes:['id','name'],
-        //     include:[{
-        //         model:UserGroup,
-        //         attributes:[]
-        //     }]
-        //     ,group:['id']
-        // })
-        // res.json(users)
     } catch (error) {
         console.log(error)
     }

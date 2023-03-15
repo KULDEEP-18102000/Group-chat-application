@@ -42,7 +42,7 @@
 
         // const io = require('socket.io-client')
 
-        const socket = io('http://3.109.32.194:5000')
+        const socket = io('http:///3.109.32.194:5000')
 
         socket.on("connect", () => {
             console.log(`connected with id:${socket.id}`)
@@ -63,6 +63,15 @@
             messageSection.appendChild(li)
         })
 
+        socket.on("receive-image", url => {
+            const a = document.createElement('a')
+            a.appendChild(document.createTextNode('image'))
+            a.href = url
+            a.download = 'myimage.jpg'
+            messageSection.appendChild(a)
+            messageSection.appendChild(document.createElement('br'))
+        })
+
         window.addEventListener('DOMContentLoaded', async (req, res) => {
             // const allChats=JSON.parse(localStorage.getItem('chats'))
             // console.log(allChats)
@@ -80,6 +89,19 @@
                     li.setAttribute('id', chat.id)
                     last_message_id = chat.id
                     messageSection.appendChild(li)
+                }
+            }
+
+            if (localStorage.getItem('files') !== null) {
+                const localFiles = JSON.parse(localStorage.getItem('files'))
+                for (let index = 0; index < localFiles.length; index++) {
+                    const file = localFiles[index];
+                    const a = document.createElement('a')
+                    a.appendChild(document.createTextNode('image'))
+                    a.href = file.url
+                    a.download = 'myimage.jpg'
+                    messageSection.appendChild(a)
+                    messageSection.appendChild(document.createElement('br'))
                 }
             }
 
@@ -138,6 +160,19 @@
                         messageSection.appendChild(li)
                     }
 
+                    const files = await axios.get(`http://3.109.32.194:3000/file/getallfiles/${groupId}`)
+                    console.log(files.data.files)
+                    localStorage.setItem('files', JSON.stringify(files.data.files))
+                    for (let index = 0; index < files.data.files.length; index++) {
+                        const file = files.data.files[index];
+                        const a = document.createElement('a')
+                        a.appendChild(document.createTextNode('image'))
+                        a.href = file.url
+                        a.download = `myimage.jpg`
+                        messageSection.appendChild(a)
+                        messageSection.appendChild(document.createElement('br'))
+                    }
+
                     const label = document.createElement('label')
                     label.appendChild(document.createTextNode('Message:'))
                     label.setAttribute('for', 'message')
@@ -153,6 +188,69 @@
                     btn.setAttribute('type', 'submit')
                     btn.setAttribute('class', 'btn')
                     SendMessage.appendChild(btn)
+                    const fileInput = document.createElement('input')
+                    fileInput.setAttribute('type', 'file')
+                    fileInput.setAttribute('id', 'file')
+                    fileInput.setAttribute('name', 'file')
+                    SendMessage.appendChild(fileInput)
+
+
+                    document.getElementById("file").addEventListener("change", async function (event) {
+
+                        const img = event.target.files[0]
+
+                        const Data = new FormData();
+                        Data.append('groupId', groupId)
+                        Data.append('img', img)
+
+                        const token = localStorage.getItem('token')
+                        const response = await axios.post(`http://3.109.32.194:3000/file/createfile`, Data, { headers: { "Authorization": token } })
+                        console.log(response.data.fileURl)
+
+                        const a = document.createElement('a')
+                        a.appendChild(document.createTextNode('image'))
+                        a.href = response.data.fileURl
+                        a.download = `myimage.jpg`
+                        messageSection.appendChild(a)
+                        messageSection.appendChild(document.createElement('br'))
+
+                        socket.emit("image", response.data.fileURl);
+
+
+
+                        // console.log(req.files.file);
+
+                        // Prepeare file reader
+                        // console.log(event)
+                        // var file = event.target.files[0];
+                        // console.log(file)
+                        // var fileReader = new FileReader();
+
+                        // fileReader.onloadend = async function (event) {
+                        //     console.log(event)
+                        //     const image = event.target.result
+                        //     console.log(image)
+
+                        //     const my_obj = {
+                        //         image: image
+                        //     }
+
+                        //     const a = document.createElement('a')
+                        //     a.appendChild(document.createTextNode('image'))
+                        //     a.href = image
+                        //     // a.target="_blank"
+                        //     a.download = 'myimage.jpg'
+                        //     // a.click()
+                        //     const token=localStorage.getItem('token')
+                        //     const response=await axios.post(`http://3.109.32.194:3000/file/createfile/${groupId}`,my_obj, { headers: { "Authorization": token } })
+                        //     console.log(response)
+                        //     // Send an image event to the socket
+                        //     socket.emit("image", image);
+                        //     messageSection.appendChild(a)
+                        // };
+                        // Read file
+                        // fileReader.readAsDataURL(file);
+                    })
 
 
                     document.getElementById('msg-btn').onclick = async (req, res) => {
